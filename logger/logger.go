@@ -2,6 +2,7 @@
 package logger
 
 import (
+	"io"
 	"log"
 	"os"
 )
@@ -24,16 +25,29 @@ var (
 	warnLogger  *log.Logger
 	errorLogger *log.Logger
 	logLevel    LogLevel = LevelInfo // 默认日志级别为info
+	logFile     *os.File             // 新增文件句柄
 )
 
 // 初始化, 设置日志，都打印到文件里
 func init() {
-	logFile, _ := os.OpenFile("app.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-	log.SetOutput(logFile) // 设置日志输出到文件
-	debugLogger = log.New(log.Writer(), "[DEBUG] ", log.Ldate|log.Ltime|log.Lshortfile)
-	infoLogger = log.New(log.Writer(), "[INFO] ", log.Ldate|log.Ltime|log.Lshortfile)
-	warnLogger = log.New(log.Writer(), "[WARN] ", log.Ldate|log.Ltime|log.Lshortfile)
-	errorLogger = log.New(log.Writer(), "[ERROR] ", log.Ldate|log.Ltime|log.Lshortfile)
+	file, _ := os.OpenFile("app.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+
+	// 关闭旧文件（如果有）
+	if logFile != nil {
+		logFile.Close()
+	}
+	logFile = file
+
+	// 创建组合Writer：同时输出到文件和控制台
+	multiDebug := io.MultiWriter(os.Stdout, logFile)
+	multiInfo := io.MultiWriter(os.Stdout, logFile)
+	multiWarn := io.MultiWriter(os.Stdout, logFile)
+	multiError := io.MultiWriter(os.Stdout, logFile)
+
+	debugLogger = log.New(multiDebug, "[DEBUG] ", log.Ldate|log.Ltime|log.Lshortfile)
+	infoLogger = log.New(multiInfo, "[INFO ] ", log.Ldate|log.Ltime|log.Lshortfile)
+	warnLogger = log.New(multiWarn, "[WARN ] ", log.Ldate|log.Ltime|log.Lshortfile)
+	errorLogger = log.New(multiError, "[ERROR] ", log.Ldate|log.Ltime|log.Lshortfile)
 }
 
 // SetLogLevel 设置日志级别
