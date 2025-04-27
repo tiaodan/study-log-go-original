@@ -11,6 +11,16 @@ func main() {
 	logger.Warn("这是一条警告信息")
 	logger.Error("这是一条错误信息")
 
+	logger.Debug("这是一条调试信息-不带百分号", "debug")
+	logger.Info("这是一条普通信息-不带百分号", "info")
+	logger.Warn("这是一条警告信息-不带百分号", "warn")
+	logger.Error("这是一条错误信息-不带百分号", "error")
+
+	logger.Debug("这是一条调试信息-带百分号 %v", "debug")
+	logger.Info("这是一条普通信息-带百分号 %v", "info")
+	logger.Warn("这是一条警告信息-带百分号 %v", "warn")
+	logger.Error("这是一条错误信息-带百分号 %v", "error")
+
 	// 改变日志级别为Error
 	logger.SetLogLevel(logger.LevelError)
 

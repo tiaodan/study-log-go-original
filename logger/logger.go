@@ -56,29 +56,50 @@ func SetLogLevel(level LogLevel) {
 }
 
 // 打印debug级别日志
-func Debug(format string, v ...interface{}) {
+func DebugNoUse(format string, v ...interface{}) {
 	if logLevel <= LevelDebug {
 		debugLogger.Printf(format, v...)
 	}
 }
+func Debug(v ...interface{}) {
+	if logLevel <= LevelError {
+		debugLogger.Printf("%v\n", v...)
+	}
+}
 
 // 打印info级别日志
-func Info(format string, v ...interface{}) {
+func InfoNoUse(format string, v ...interface{}) {
 	if logLevel <= LevelInfo {
 		infoLogger.Printf(format, v...)
 	}
 }
+func Info(v ...interface{}) {
+	if logLevel <= LevelError {
+		infoLogger.Printf("%v\n", v...)
+	}
+}
 
 // 打印warn级别日志
-func Warn(format string, v ...interface{}) {
+func WarnNoUse(format string, v ...interface{}) {
 	if logLevel <= LevelWarn {
 		warnLogger.Printf(format, v...)
 	}
 }
+func Warn(v ...interface{}) {
+	if logLevel <= LevelError {
+		warnLogger.Printf("%v\n", v...)
+	}
+}
 
 // 打印error级别日志
-func Error(format string, v ...interface{}) {
+// logger.Error("创建失败:", result.Error) 会警告,只能带上%v才对. logger.Error("创建失败:", result.Error)
+func ErrorNoUse(format string, v ...interface{}) {
 	if logLevel <= LevelError {
 		errorLogger.Printf(format, v...)
+	}
+}
+func Error(v ...interface{}) {
+	if logLevel <= LevelError {
+		errorLogger.Printf("%v\n", v...)
 	}
 }
