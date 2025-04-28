@@ -6,10 +6,10 @@ func main() {
 	// 设置日志级别为debug
 	logger.SetLogLevel(logger.LevelDebug)
 
-	logger.Debug("这是一条调试信息")
-	logger.Info("这是一条普通信息")
-	logger.Warn("这是一条警告信息")
-	logger.Error("这是一条错误信息")
+	logger.Debug("这是一条调试信息11")
+	logger.Info("这是一条普通信息11")
+	logger.Warn("这是一条警告信息11")
+	logger.Error("这是一条错误信息11")
 
 	logger.Debug("这是一条调试信息-不带百分号", "debug")
 	logger.Info("这是一条普通信息-不带百分号", "info")

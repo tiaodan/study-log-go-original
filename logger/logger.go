@@ -74,7 +74,7 @@ func Debug(format string, v ...interface{}) {
 		// 获取调用者位置
 		_, fullFile, line, _ := runtime.Caller(1)
 		shortFile := path.Base(fullFile) // 截取锻路径
-		debugLogger.Printf("%s:%d %s", shortFile, line, fmt.Sprint(v...))
+		debugLogger.Printf("%s:%d %s %s", shortFile, line, format, fmt.Sprint(v...))
 	}
 }
 
@@ -84,7 +84,7 @@ func Info(format string, v ...interface{}) {
 		// 获取调用者位置
 		_, fullFile, line, _ := runtime.Caller(1)
 		shortFile := path.Base(fullFile) // 截取锻路径
-		infoLogger.Printf("%s:%d %s", shortFile, line, fmt.Sprint(v...))
+		infoLogger.Printf("%s:%d %s %s", shortFile, line, format, fmt.Sprint(v...))
 	}
 }
 
@@ -94,7 +94,7 @@ func Warn(format string, v ...interface{}) {
 		// 获取调用者位置
 		_, fullFile, line, _ := runtime.Caller(1)
 		shortFile := path.Base(fullFile) // 截取锻路径
-		warnLogger.Printf("%s:%d %s", shortFile, line, fmt.Sprint(v...))
+		warnLogger.Printf("%s:%d %s %s", shortFile, line, format, fmt.Sprint(v...))
 	}
 }
 
@@ -104,7 +104,7 @@ func Error(format string, v ...interface{}) {
 		// 获取调用者位置
 		_, fullFile, line, _ := runtime.Caller(1)
 		shortFile := path.Base(fullFile) // 截取锻路径
-		errorLogger.Printf("%s:%d %s", shortFile, line, fmt.Sprint(v...))
+		errorLogger.Printf("%s:%d %s %s", shortFile, line, format, fmt.Sprint(v...))
 	}
 }
 

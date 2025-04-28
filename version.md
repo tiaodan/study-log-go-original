@@ -9,3 +9,6 @@
 
 # v0.0.0.3
 - 整合日志打印,looger.Debug() 参数带不带%v都可以
+
+# v0.0.0.4
+- 解决logger.Debug("xxxxx") 不打印

@@ -10,3 +10,39 @@
 [INFO ] 2025/04/28 14:18:26 main.go:20 info
 [WARN ] 2025/04/28 14:18:26 main.go:21 warn
 [ERROR] 2025/04/28 14:18:26 main.go:22 error
+[DEBUG] 2025/04/28 16:10:56 main.go:9 
+[INFO ] 2025/04/28 16:10:56 main.go:10 
+[WARN ] 2025/04/28 16:10:56 main.go:11 
+[ERROR] 2025/04/28 16:10:56 main.go:12 
+[DEBUG] 2025/04/28 16:10:56 main.go:14 debug
+[INFO ] 2025/04/28 16:10:56 main.go:15 info
+[WARN ] 2025/04/28 16:10:56 main.go:16 warn
+[ERROR] 2025/04/28 16:10:56 main.go:17 error
+[DEBUG] 2025/04/28 16:10:56 main.go:19 debug
+[INFO ] 2025/04/28 16:10:56 main.go:20 info
+[WARN ] 2025/04/28 16:10:56 main.go:21 warn
+[ERROR] 2025/04/28 16:10:56 main.go:22 error
+[DEBUG] 2025/04/28 16:11:26 main.go:9 这是一条调试信息11%!(EXTRA string=)
+[INFO ] 2025/04/28 16:11:26 main.go:10 这是一条普通信息11%!(EXTRA string=)
+[WARN ] 2025/04/28 16:11:26 main.go:11 这是一条警告信息11%!(EXTRA string=)
+[ERROR] 2025/04/28 16:11:26 main.go:12 这是一条错误信息11%!(EXTRA string=)
+[DEBUG] 2025/04/28 16:11:26 main.go:14 这是一条调试信息-不带百分号%!(EXTRA string=debug)
+[INFO ] 2025/04/28 16:11:26 main.go:15 这是一条普通信息-不带百分号%!(EXTRA string=info)
+[WARN ] 2025/04/28 16:11:26 main.go:16 这是一条警告信息-不带百分号%!(EXTRA string=warn)
+[ERROR] 2025/04/28 16:11:26 main.go:17 这是一条错误信息-不带百分号%!(EXTRA string=error)
+[DEBUG] 2025/04/28 16:11:26 main.go:19 这是一条调试信息-带百分号 %v%!(EXTRA string=debug)
+[INFO ] 2025/04/28 16:11:26 main.go:20 这是一条普通信息-带百分号 %v%!(EXTRA string=info)
+[WARN ] 2025/04/28 16:11:26 main.go:21 这是一条警告信息-带百分号 %v%!(EXTRA string=warn)
+[ERROR] 2025/04/28 16:11:26 main.go:22 这是一条错误信息-带百分号 %v%!(EXTRA string=error)
+[DEBUG] 2025/04/28 16:12:20 main.go:9 这是一条调试信息11 
+[INFO ] 2025/04/28 16:12:20 main.go:10 这是一条普通信息11 
+[WARN ] 2025/04/28 16:12:20 main.go:11 这是一条警告信息11 
+[ERROR] 2025/04/28 16:12:20 main.go:12 这是一条错误信息11 
+[DEBUG] 2025/04/28 16:12:20 main.go:14 这是一条调试信息-不带百分号 debug
+[INFO ] 2025/04/28 16:12:20 main.go:15 这是一条普通信息-不带百分号 info
+[WARN ] 2025/04/28 16:12:20 main.go:16 这是一条警告信息-不带百分号 warn
+[ERROR] 2025/04/28 16:12:20 main.go:17 这是一条错误信息-不带百分号 error
+[DEBUG] 2025/04/28 16:12:20 main.go:19 这是一条调试信息-带百分号 %v debug
+[INFO ] 2025/04/28 16:12:20 main.go:20 这是一条普通信息-带百分号 %v info
+[WARN ] 2025/04/28 16:12:20 main.go:21 这是一条警告信息-带百分号 %v warn
+[ERROR] 2025/04/28 16:12:20 main.go:22 这是一条错误信息-带百分号 %v error
