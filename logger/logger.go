@@ -2,9 +2,12 @@
 package logger
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"os"
+	"path"
+	"runtime"
 )
 
 // 定义日志级别
@@ -44,10 +47,20 @@ func init() {
 	multiWarn := io.MultiWriter(os.Stdout, logFile)
 	multiError := io.MultiWriter(os.Stdout, logFile)
 
-	debugLogger = log.New(multiDebug, "[DEBUG] ", log.Ldate|log.Ltime|log.Lshortfile)
-	infoLogger = log.New(multiInfo, "[INFO ] ", log.Ldate|log.Ltime|log.Lshortfile)
-	warnLogger = log.New(multiWarn, "[WARN ] ", log.Ldate|log.Ltime|log.Lshortfile)
-	errorLogger = log.New(multiError, "[ERROR] ", log.Ldate|log.Ltime|log.Lshortfile)
+	/*
+		// 打印文件位置是logger.go 非源文件位置
+		debugLogger = log.New(multiDebug, "[DEBUG] ", log.Ldate|log.Ltime|log.Lshortfile)
+		infoLogger = log.New(multiInfo, "[INFO ] ", log.Ldate|log.Ltime|log.Lshortfile)
+		warnLogger = log.New(multiWarn, "[WARN ] ", log.Ldate|log.Ltime|log.Lshortfile)
+		errorLogger = log.New(multiError, "[ERROR] ", log.Ldate|log.Ltime|log.Lshortfile)
+
+	*/
+
+	// 打印文件位置是 源文件位置。如: [DEBUG] main.go:72: xx
+	debugLogger = log.New(multiDebug, "[DEBUG] ", log.Ldate|log.Ltime)
+	infoLogger = log.New(multiInfo, "[INFO ] ", log.Ldate|log.Ltime)
+	warnLogger = log.New(multiWarn, "[WARN ] ", log.Ldate|log.Ltime)
+	errorLogger = log.New(multiError, "[ERROR] ", log.Ldate|log.Ltime)
 }
 
 // SetLogLevel 设置日志级别
@@ -55,51 +68,110 @@ func SetLogLevel(level LogLevel) {
 	logLevel = level
 }
 
-// 打印debug级别日志
-func DebugNoUse(format string, v ...interface{}) {
+// 打印debug级别日志, 对应封装log.Printf
+func Debug(format string, v ...interface{}) {
 	if logLevel <= LevelDebug {
-		debugLogger.Printf(format, v...)
-	}
-}
-func Debug(v ...interface{}) {
-	if logLevel <= LevelError {
-		debugLogger.Printf("%v\n", v...)
+		// 获取调用者位置
+		_, fullFile, line, _ := runtime.Caller(1)
+		shortFile := path.Base(fullFile) // 截取锻路径
+		debugLogger.Printf("%s:%d %s", shortFile, line, fmt.Sprint(v...))
 	}
 }
 
-// 打印info级别日志
-func InfoNoUse(format string, v ...interface{}) {
-	if logLevel <= LevelInfo {
-		infoLogger.Printf(format, v...)
-	}
-}
-func Info(v ...interface{}) {
-	if logLevel <= LevelError {
-		infoLogger.Printf("%v\n", v...)
+// 打印info级别日志, 对应封装log.Printf
+func Info(format string, v ...interface{}) {
+	if logLevel <= LevelDebug {
+		// 获取调用者位置
+		_, fullFile, line, _ := runtime.Caller(1)
+		shortFile := path.Base(fullFile) // 截取锻路径
+		infoLogger.Printf("%s:%d %s", shortFile, line, fmt.Sprint(v...))
 	}
 }
 
 // 打印warn级别日志
-func WarnNoUse(format string, v ...interface{}) {
-	if logLevel <= LevelWarn {
-		warnLogger.Printf(format, v...)
-	}
-}
-func Warn(v ...interface{}) {
-	if logLevel <= LevelError {
-		warnLogger.Printf("%v\n", v...)
+func Warn(format string, v ...interface{}) {
+	if logLevel <= LevelDebug {
+		// 获取调用者位置
+		_, fullFile, line, _ := runtime.Caller(1)
+		shortFile := path.Base(fullFile) // 截取锻路径
+		warnLogger.Printf("%s:%d %s", shortFile, line, fmt.Sprint(v...))
 	}
 }
 
 // 打印error级别日志
+func Error(format string, v ...interface{}) {
+	if logLevel <= LevelDebug {
+		// 获取调用者位置
+		_, fullFile, line, _ := runtime.Caller(1)
+		shortFile := path.Base(fullFile) // 截取锻路径
+		errorLogger.Printf("%s:%d %s", shortFile, line, fmt.Sprint(v...))
+	}
+}
+
+// ----------------------------------------- 只能通过Debugf() 和Debug()2个函数实现 start
+/*
+// 打印日志级别 v0.1
+
+// 打印debug级别日志, 对应封装log.Printf
+func Debugf(format string, v ...interface{}) {
+	if logLevel <= LevelDebug {
+		// debugLogger.Printf(format, v...) // 原来写法
+		// 获取调用者位置
+		_, file, line, _ := runtime.Caller(1)
+		debugLogger.Printf("%s:%d %s", file, line, fmt.Sprint(v...))
+	}
+}
+
+// 封装log.Println
+func Debug(v ...interface{}) {
+	if logLevel <= LevelError {
+		// debugLogger.Println(v...) // 原来写法
+		_, file, line, _ := runtime.Caller(1) // 跳过当前函数层级
+		debugLogger.Printf("%s:%d %s", file, line, fmt.Sprint(v...))
+	}
+}
+
+// 打印info级别日志, 对应封装log.Printf
+func Infof(format string, v ...interface{}) {
+	if logLevel <= LevelInfo {
+		infoLogger.Printf(format, v...)
+	}
+}
+
+// 封装log.Println
+func Info(v ...interface{}) {
+	if logLevel <= LevelError {
+		infoLogger.Println(v...)
+	}
+}
+
+// 打印warn级别日志, 对应封装log.Printf
+func Warnf(format string, v ...interface{}) {
+	if logLevel <= LevelWarn {
+		warnLogger.Printf(format, v...)
+	}
+}
+
+// 封装log.Println
+func Warn(v ...interface{}) {
+	if logLevel <= LevelError {
+		warnLogger.Println(v...)
+	}
+}
+
+// 打印error级别日志, 对应封装log.Printf
 // logger.Error("创建失败:", result.Error) 会警告,只能带上%v才对. logger.Error("创建失败:", result.Error)
-func ErrorNoUse(format string, v ...interface{}) {
+func Errorf(format string, v ...interface{}) {
 	if logLevel <= LevelError {
 		errorLogger.Printf(format, v...)
 	}
 }
+
+// 封装log.Println
 func Error(v ...interface{}) {
 	if logLevel <= LevelError {
-		errorLogger.Printf("%v\n", v...)
+		errorLogger.Println(v...)
 	}
 }
+*/
+// ----------------------------------------- 只能通过Debugf() 和Debug()2个函数实现 end

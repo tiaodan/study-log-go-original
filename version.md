@@ -6,3 +6,6 @@
 
 # v0.0.0.2
 - 修改日志打印,可以不带%v.修改: logger.Error("创建失败:", result.Error) 会警告,只能带上%v才对. logger.Error("创建失败:", result.Error)
+
+# v0.0.0.3
+- 整合日志打印,looger.Debug() 参数带不带%v都可以

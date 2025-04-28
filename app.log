@@ -1,53 +1,12 @@
-[DEBUG] 2025/03/30 23:16:12 logger.go:47: 这是一条调试信息
-[INFO] 2025/03/30 23:16:12 logger.go:54: 这是一条普通信息
-[WARN] 2025/03/30 23:16:12 logger.go:61: 这是一条警告信息
-[ERROR] 2025/03/30 23:16:12 logger.go:68: 这是一条错误信息
-[ERROR] 2025/03/30 23:16:12 logger.go:68: 只有错误信息会显示
-[DEBUG] 2025/03/30 23:26:45 logger.go:61: 这是一条调试信息
-[INFO] 2025/03/30 23:26:45 logger.go:68: 这是一条普通信息
-[WARN] 2025/03/30 23:26:45 logger.go:75: 这是一条警告信息
-[ERROR] 2025/03/30 23:26:45 logger.go:82: 这是一条错误信息
-[ERROR] 2025/03/30 23:26:45 logger.go:82: 只有错误信息会显示
-[DEBUG] 2025/03/30 23:27:14 logger.go:61: 这是一条调试信息
-[INFO ] 2025/03/30 23:27:15 logger.go:68: 这是一条普通信息
-[WARN ] 2025/03/30 23:27:15 logger.go:75: 这是一条警告信息
-[ERROR] 2025/03/30 23:27:15 logger.go:82: 这是一条错误信息
-[ERROR] 2025/03/30 23:27:15 logger.go:82: 只有错误信息会显示
-[DEBUG] 2025/04/27 14:08:07 logger.go:66: 这是一条调试信息
-[INFO ] 2025/04/27 14:08:07 logger.go:78: 这是一条普通信息
-[WARN ] 2025/04/27 14:08:07 logger.go:90: 这是一条警告信息
-[ERROR] 2025/04/27 14:08:07 logger.go:103: 这是一条错误信息
-[DEBUG] 2025/04/27 14:08:07 logger.go:66: 这是一条调试信息-不带百分号
-%!(EXTRA string=debug)
-[INFO ] 2025/04/27 14:08:07 logger.go:78: 这是一条普通信息-不带百分号
-%!(EXTRA string=info)
-[WARN ] 2025/04/27 14:08:07 logger.go:90: 这是一条警告信息-不带百分号
-%!(EXTRA string=warn)
-[ERROR] 2025/04/27 14:08:07 logger.go:103: 这是一条错误信息-不带百分号
-%!(EXTRA string=error)
-[DEBUG] 2025/04/27 14:08:07 logger.go:66: 这条调试信息不会显示
-[INFO ] 2025/04/27 14:08:07 logger.go:78: 这条普通信息不会显示
-[ERROR] 2025/04/27 14:08:07 logger.go:103: 只有错误信息会显示
-[DEBUG] 2025/04/27 14:08:41 logger.go:66: 这是一条调试信息
-[INFO ] 2025/04/27 14:08:41 logger.go:78: 这是一条普通信息
-[WARN ] 2025/04/27 14:08:41 logger.go:90: 这是一条警告信息
-[ERROR] 2025/04/27 14:08:41 logger.go:103: 这是一条错误信息
-[DEBUG] 2025/04/27 14:08:41 logger.go:66: 这是一条调试信息-不带百分号
-%!(EXTRA string=debug)
-[INFO ] 2025/04/27 14:08:41 logger.go:78: 这是一条普通信息-不带百分号
-%!(EXTRA string=info)
-[WARN ] 2025/04/27 14:08:41 logger.go:90: 这是一条警告信息-不带百分号
-%!(EXTRA string=warn)
-[ERROR] 2025/04/27 14:08:41 logger.go:103: 这是一条错误信息-不带百分号
-%!(EXTRA string=error)
-[DEBUG] 2025/04/27 14:08:41 logger.go:66: 这是一条调试信息-带百分号 %v
-%!(EXTRA string=debug)
-[INFO ] 2025/04/27 14:08:41 logger.go:78: 这是一条普通信息-带百分号 %v
-%!(EXTRA string=info)
-[WARN ] 2025/04/27 14:08:41 logger.go:90: 这是一条警告信息-带百分号 %v
-%!(EXTRA string=warn)
-[ERROR] 2025/04/27 14:08:41 logger.go:103: 这是一条错误信息-带百分号 %v
-%!(EXTRA string=error)
-[DEBUG] 2025/04/27 14:08:41 logger.go:66: 这条调试信息不会显示
-[INFO ] 2025/04/27 14:08:41 logger.go:78: 这条普通信息不会显示
-[ERROR] 2025/04/27 14:08:41 logger.go:103: 只有错误信息会显示
+[DEBUG] 2025/04/28 14:18:25 main.go:9 
+[INFO ] 2025/04/28 14:18:26 main.go:10 
+[WARN ] 2025/04/28 14:18:26 main.go:11 
+[ERROR] 2025/04/28 14:18:26 main.go:12 
+[DEBUG] 2025/04/28 14:18:26 main.go:14 debug
+[INFO ] 2025/04/28 14:18:26 main.go:15 info
+[WARN ] 2025/04/28 14:18:26 main.go:16 warn
+[ERROR] 2025/04/28 14:18:26 main.go:17 error
+[DEBUG] 2025/04/28 14:18:26 main.go:19 debug
+[INFO ] 2025/04/28 14:18:26 main.go:20 info
+[WARN ] 2025/04/28 14:18:26 main.go:21 warn
+[ERROR] 2025/04/28 14:18:26 main.go:22 error
