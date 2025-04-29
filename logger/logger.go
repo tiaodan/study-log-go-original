@@ -1,177 +1,118 @@
-// 封装go自带log库, 分 debug、info、warn、error级别日志
 package logger
 
 import (
 	"fmt"
 	"io"
-	"log"
 	"os"
-	"path"
+	"path/filepath"
 	"runtime"
+	"strings"
+	"time"
+
+	"github.com/sirupsen/logrus"
 )
 
-// 定义日志级别
-type LogLevel int
+// 定义自定义格式化器（控制台输出）
+type CustomFormatter struct{}
 
-// 常量, 具体日志级别
-const (
-	LevelDebug LogLevel = iota
-	LevelInfo
-	LevelWarn
-	LevelError
-)
-
-// 变量
-var (
-	debugLogger *log.Logger
-	infoLogger  *log.Logger
-	warnLogger  *log.Logger
-	errorLogger *log.Logger
-	logLevel    LogLevel = LevelInfo // 默认日志级别为info
-	logFile     *os.File             // 新增文件句柄
-)
-
-// 初始化, 设置日志，都打印到文件里
-func init() {
-	file, _ := os.OpenFile("app.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-
-	// 关闭旧文件（如果有）
-	if logFile != nil {
-		logFile.Close()
+// 实现 logrus.Formatter 接口
+func (f *CustomFormatter) Format(entry *logrus.Entry) ([]byte, error) {
+	// 获取文件名和行号
+	_, file, line, ok := runtime.Caller(7) // 调用者的堆栈深度，通常是日志调用的位置
+	if !ok {
+		file = "unknown"
+		line = 0
 	}
-	logFile = file
 
-	// 创建组合Writer：同时输出到文件和控制台
-	multiDebug := io.MultiWriter(os.Stdout, logFile)
-	multiInfo := io.MultiWriter(os.Stdout, logFile)
-	multiWarn := io.MultiWriter(os.Stdout, logFile)
-	multiError := io.MultiWriter(os.Stdout, logFile)
+	// 提取短文件名
+	shortFile := filepath.Base(file)
 
-	/*
-		// 打印文件位置是logger.go 非源文件位置
-		debugLogger = log.New(multiDebug, "[DEBUG] ", log.Ldate|log.Ltime|log.Lshortfile)
-		infoLogger = log.New(multiInfo, "[INFO ] ", log.Ldate|log.Ltime|log.Lshortfile)
-		warnLogger = log.New(multiWarn, "[WARN ] ", log.Ldate|log.Ltime|log.Lshortfile)
-		errorLogger = log.New(multiError, "[ERROR] ", log.Ldate|log.Ltime|log.Lshortfile)
-
-	*/
-
-	// 打印文件位置是 源文件位置。如: [DEBUG] main.go:72: xx
-	debugLogger = log.New(multiDebug, "[DEBUG] ", log.Ldate|log.Ltime)
-	infoLogger = log.New(multiInfo, "[INFO ] ", log.Ldate|log.Ltime)
-	warnLogger = log.New(multiWarn, "[WARN ] ", log.Ldate|log.Ltime)
-	errorLogger = log.New(multiError, "[ERROR] ", log.Ldate|log.Ltime)
-}
-
-// SetLogLevel 设置日志级别
-func SetLogLevel(level LogLevel) {
-	logLevel = level
-}
-
-// 打印debug级别日志, 对应封装log.Printf
-func Debug(format string, v ...interface{}) {
-	if logLevel <= LevelDebug {
-		// 获取调用者位置
-		_, fullFile, line, _ := runtime.Caller(1)
-		shortFile := path.Base(fullFile) // 截取锻路径
-		debugLogger.Printf("%s:%d %s %s", shortFile, line, format, fmt.Sprint(v...))
+	// 定义日志级别颜色
+	var color string
+	switch entry.Level {
+	case logrus.DebugLevel:
+		color = "\033[34m" // 蓝色
+	case logrus.InfoLevel:
+		color = "\033[32m" // 绿色
+	case logrus.WarnLevel:
+		color = "\033[33m" // 黄色
+	case logrus.ErrorLevel:
+		color = "\033[31m" // 红色
+	default:
+		color = "\033[0m" // 默认颜色
 	}
+
+	// 格式化日志输出：[BUG等级] 日期 时间 go文件
+	logFormat := fmt.Sprintf("%s[%-5s] %s %s %s:%d %s \033[0m \n",
+		color, // 颜色前缀
+		strings.ToUpper(shortenLevel(entry.Level.String())), // bug等级转为大写并左对齐
+		time.Now().Format("2006-01-02"),                     // 日期
+		time.Now().Format("15:04:05"),                       // 时间
+		shortFile,                                           // 短文件名
+		line,                                                // 行号
+		entry.Message)                                       // 日志消息内容
+
+	return []byte(logFormat), nil
 }
 
-// 打印info级别日志, 对应封装log.Printf
-func Info(format string, v ...interface{}) {
-	if logLevel <= LevelDebug {
-		// 获取调用者位置
-		_, fullFile, line, _ := runtime.Caller(1)
-		shortFile := path.Base(fullFile) // 截取锻路径
-		infoLogger.Printf("%s:%d %s %s", shortFile, line, format, fmt.Sprint(v...))
+// 定义自定义格式化器（文件输出）
+type CustomFileFormatter struct{}
+
+// 实现 logrus.Formatter 接口
+func (f *CustomFileFormatter) Format(entry *logrus.Entry) ([]byte, error) {
+	// 获取文件名和行号
+	_, file, line, ok := runtime.Caller(7) // 调用者的堆栈深度，通常是日志调用的位置
+	if !ok {
+		file = "unknown"
+		line = 0
 	}
+
+	// 提取短文件名
+	shortFile := filepath.Base(file)
+
+	// 格式化日志输出：[BUG等级] 日期 时间 go文件
+	logFormat := fmt.Sprintf("[%-5s] %s %s %s:%d %s \n",
+		strings.ToUpper(shortenLevel(entry.Level.String())), // bug等级转为大写并左对齐
+		time.Now().Format("2006-01-02"),                     // 日期
+		time.Now().Format("15:04:05"),                       // 时间
+		shortFile,                                           // 短文件名
+		line,                                                // 行号
+		entry.Message)                                       // 日志消息内容
+
+	return []byte(logFormat), nil
 }
 
-// 打印warn级别日志
-func Warn(format string, v ...interface{}) {
-	if logLevel <= LevelDebug {
-		// 获取调用者位置
-		_, fullFile, line, _ := runtime.Caller(1)
-		shortFile := path.Base(fullFile) // 截取锻路径
-		warnLogger.Printf("%s:%d %s %s", shortFile, line, format, fmt.Sprint(v...))
+// 缩短日志级别名称
+func shortenLevel(level string) string {
+	switch level {
+	case "warning":
+		return "warn"
+	default:
+		return level
 	}
 }
 
-// 打印error级别日志
-func Error(format string, v ...interface{}) {
-	if logLevel <= LevelDebug {
-		// 获取调用者位置
-		_, fullFile, line, _ := runtime.Caller(1)
-		shortFile := path.Base(fullFile) // 截取锻路径
-		errorLogger.Printf("%s:%d %s %s", shortFile, line, format, fmt.Sprint(v...))
-	}
-}
+func main() {
 
-// ----------------------------------------- 只能通过Debugf() 和Debug()2个函数实现 start
-/*
-// 打印日志级别 v0.1
+	// 创建一个logrus实例
+	log := logrus.New()
 
-// 打印debug级别日志, 对应封装log.Printf
-func Debugf(format string, v ...interface{}) {
-	if logLevel <= LevelDebug {
-		// debugLogger.Printf(format, v...) // 原来写法
-		// 获取调用者位置
-		_, file, line, _ := runtime.Caller(1)
-		debugLogger.Printf("%s:%d %s", file, line, fmt.Sprint(v...))
-	}
-}
+	// 设置自定义日志格式（控制台输出）
+	log.SetFormatter(&CustomFormatter{}) // 带颜色输出
+	// log.SetFormatter(&CustomFileFormatter{}) // 不带颜色输出
 
-// 封装log.Println
-func Debug(v ...interface{}) {
-	if logLevel <= LevelError {
-		// debugLogger.Println(v...) // 原来写法
-		_, file, line, _ := runtime.Caller(1) // 跳过当前函数层级
-		debugLogger.Printf("%s:%d %s", file, line, fmt.Sprint(v...))
-	}
-}
+	// 设置日志级别
+	log.SetLevel(logrus.DebugLevel)
 
-// 打印info级别日志, 对应封装log.Printf
-func Infof(format string, v ...interface{}) {
-	if logLevel <= LevelInfo {
-		infoLogger.Printf(format, v...)
+	// 创建一个文件用于写入日志
+	file, err := os.OpenFile("app.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		log.Printf("Failed to open log file: %v", err)
 	}
-}
+	defer file.Close() // 关闭日志文件
 
-// 封装log.Println
-func Info(v ...interface{}) {
-	if logLevel <= LevelError {
-		infoLogger.Println(v...)
-	}
-}
+	// 使用 io.MultiWriter 实现多写入器功能
+	multiWriter := io.MultiWriter(os.Stdout, file)
+	log.SetOutput(multiWriter)
 
-// 打印warn级别日志, 对应封装log.Printf
-func Warnf(format string, v ...interface{}) {
-	if logLevel <= LevelWarn {
-		warnLogger.Printf(format, v...)
-	}
 }
-
-// 封装log.Println
-func Warn(v ...interface{}) {
-	if logLevel <= LevelError {
-		warnLogger.Println(v...)
-	}
-}
-
-// 打印error级别日志, 对应封装log.Printf
-// logger.Error("创建失败:", result.Error) 会警告,只能带上%v才对. logger.Error("创建失败:", result.Error)
-func Errorf(format string, v ...interface{}) {
-	if logLevel <= LevelError {
-		errorLogger.Printf(format, v...)
-	}
-}
-
-// 封装log.Println
-func Error(v ...interface{}) {
-	if logLevel <= LevelError {
-		errorLogger.Println(v...)
-	}
-}
-*/
-// ----------------------------------------- 只能通过Debugf() 和Debug()2个函数实现 end
