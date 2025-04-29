@@ -1,5 +1,5 @@
 // 自己封装go自带log库, 分 debug、info、warn、error级别日志
-package logger
+package log
 
 // ----------------------------------------- v0.0.0.4 start
 /*

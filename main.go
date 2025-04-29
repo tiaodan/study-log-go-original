@@ -3,18 +3,17 @@ package main
 import (
 	"io"
 	"os"
-	"study-json-go-origina/logger"
+	"study-json-go-origina/log"
 
 	"github.com/sirupsen/logrus"
 )
 
 func main() {
-	// 创建一个logrus实例
-	log := logrus.New()
+	// 2. 根据配置文件,设置日志相关,现在用logrus框架
+	log.InitLog()
 
-	// 设置自定义日志格式（控制台输出）
-	log.SetFormatter(&logger.CustomFormatter{}) // 带颜色输出
-	// log.SetFormatter(&CustomFileFormatter{}) // 不带颜色输出
+	// 获取日志实例
+	log := log.GetLogger()
 
 	// 设置日志级别
 	log.SetLevel(logrus.DebugLevel)

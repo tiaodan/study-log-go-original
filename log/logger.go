@@ -1,4 +1,4 @@
-package logger
+package log
 
 import (
 	"fmt"
@@ -7,10 +7,81 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/sirupsen/logrus"
 )
+
+var (
+	logInstance *logrus.Logger
+	once        sync.Once
+)
+
+// InitLog 初始化logrus 日志, 单例
+func InitLog() {
+	once.Do(func() {
+		logInstance = logrus.New()
+
+		// 设置自定义日志格式（控制台输出）
+		logInstance.SetFormatter(&CustomFormatter{}) // 带颜色输出
+		// logInstance.SetFormatter(&CustomFileFormatter{}) // 不带颜色输出
+
+		// 设置日志级别
+		logInstance.SetLevel(logrus.DebugLevel)
+
+		// 创建一个文件用于写入日志
+		file, err := os.OpenFile("app.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+		if err != nil {
+			logInstance.Printf("Failed to open log file: %v", err)
+		}
+		defer file.Close() // 关闭日志文件
+
+		// 使用 io.MultiWriter 实现多写入器功能
+		multiWriter := io.MultiWriter(os.Stdout, file)
+		logInstance.SetOutput(multiWriter)
+	})
+}
+
+// GetLogger 返回日志实例
+func GetLogger() *logrus.Logger {
+	if logInstance == nil {
+		InitLog()
+	}
+	return logInstance
+}
+
+// Debug 记录调试信息
+func Debug(args ...interface{}) {
+	GetLogger().Debug(args...)
+}
+func Debugf(format string, args ...interface{}) {
+	GetLogger().Debugf(format, args...)
+}
+
+// Info 记录信息
+func Info(args ...interface{}) {
+	GetLogger().Info(args...)
+}
+func Infof(format string, args ...interface{}) {
+	GetLogger().Infof(format, args...)
+}
+
+// Warn 记录警告信息
+func Warn(args ...interface{}) {
+	GetLogger().Warn(args...)
+}
+func Warnf(format string, args ...interface{}) {
+	GetLogger().Warnf(format, args...)
+}
+
+// Error 记录错误信息
+func Error(args ...interface{}) {
+	GetLogger().Error(args...)
+}
+func Errorf(format string, args ...interface{}) {
+	GetLogger().Errorf(format, args...)
+}
 
 // 定义自定义格式化器（控制台输出）
 type CustomFormatter struct{}
@@ -90,29 +161,4 @@ func shortenLevel(level string) string {
 	default:
 		return level
 	}
-}
-
-func main() {
-
-	// 创建一个logrus实例
-	log := logrus.New()
-
-	// 设置自定义日志格式（控制台输出）
-	log.SetFormatter(&CustomFormatter{}) // 带颜色输出
-	// log.SetFormatter(&CustomFileFormatter{}) // 不带颜色输出
-
-	// 设置日志级别
-	log.SetLevel(logrus.DebugLevel)
-
-	// 创建一个文件用于写入日志
-	file, err := os.OpenFile("app.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-	if err != nil {
-		log.Printf("Failed to open log file: %v", err)
-	}
-	defer file.Close() // 关闭日志文件
-
-	// 使用 io.MultiWriter 实现多写入器功能
-	multiWriter := io.MultiWriter(os.Stdout, file)
-	log.SetOutput(multiWriter)
-
 }

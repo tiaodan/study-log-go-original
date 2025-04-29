@@ -18,3 +18,9 @@
 - 但是无法控制 输出到控制台(带颜色), 输出到文件(不带颜色)
 - 能用配置文件,控制打印带颜色,还是不带颜色的
 - 打印带占位符%v 就用log.Debugf(); 不带占位符用log.Debug()
+
+# v0.0.0.6
+- 改用logrus框架
+- 把logger包改成log包
+- 用了自定义logrus,就不建议用go 自带的log库了,因为可能会冲突,如果非要打印,用fmt.Println()
+- 把logger.Debug()打印, 全换成log.Debugf()
